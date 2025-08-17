@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" x-data="themeApp()" :class="{ dark: isDark, light: !isDark }" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JDSS Youth – Jai Durga Seva Samithi</title>
+  <meta name="description" content="JDSS Youth – Jai Durga Seva Samithi (Kodimail, Jagityal). Since 1997, celebrating Durga Mata & Ganesh Chaturthi with devotion, unity, and service." />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="canonical" href="https://example.com/" />
+  <meta name="theme-color" content="#0a0d1f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="JDSS Youth – Jai Durga Seva Samithi" />
+  <meta property="og:description" content="Since 1997, celebrating Durga Mata & Ganesh Chaturthi with devotion, unity, and service." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="ganesh.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Fonts (clean + friendly) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Bubble fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+
+  <!-- Tailwind + AOS + Alpine -->
+  <script>
+    // Tailwind config BEFORE CDN script
+    tailwind = { config: {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Poppins','ui-sans-serif','system-ui'],
+            body: ['Inter','ui-sans-serif','system-ui']
+          },
+          boxShadow: {
+            neu: '10px 10px 24px rgba(0,0,0,.25), -10px -10px 24px rgba(255,255,255,.06)',
+            neuIn: 'inset 6px 6px 16px rgba(0,0,0,.28), inset -6px -6px 16px rgba(255,255,255,.06)'
+          }
+        }
+      }
+    }};
+  </script>
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.0/cdn.min.js" defer></script>
+
+  <style>
+    /* ====== Global theme (dark glass) ====== */
+    :root{
+      --bg-grad: radial-gradient(1200px 600px at 10% 10%, #10142a 0%, transparent 60%),
+                 radial-gradient(900px 500px at 90% 10%, #24103a 0%, transparent 60%),
+                 linear-gradient(135deg,#070a16,#0a0d1f 55%, #0b0b0b);
+      --glass: rgba(255,255,255,.08);
+      --glass-brd: rgba(255,255,255,.22);
+
+      /* Team tuning (phone-compressed) */
+      --team-gap: 6px;
+      --team-name-size: 9.8px;   /* very small, readable on phones */
+      --team-line: 1.05;         /* tight line height */
+      --team-card-min-h: 46px;   /* compact card */
+    }
+    .light{
+      --bg-grad: radial-gradient(1200px 600px at 10% 10%, #edf2ff 0%, transparent 60%),
+                 radial-gradient(900px 500px at 90% 10%, #ffe8f1 0%, transparent 60%),
+                 linear-gradient(135deg,#f7fafc,#f5f7fb 55%, #eef2f7);
+      --glass: rgba(255,255,255,.55);
+      --glass-brd: rgba(0,0,0,.08);
+    }
+
+    body{ font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color:#eaeff7; background: var(--bg-grad); }
+    .light body{ color:#0e1325; }
+
+    /* Utility */
+    [x-cloak]{ display:none !important; }
+
+    /* Bubble font helpers */
+    .bubble{ font-family: 'Baloo 2','Bubblegum Sans','Poppins',system-ui; letter-spacing: 0.5px; }
+    .bubble-caps{ font-family: 'Bubblegum Sans','Baloo 2','Poppins',system-ui; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    .glass{ background:var(--glass); backdrop-filter: blur(10px); border:1px solid var(--glass-brd); border-radius:14px; }
+    .neu{ background: rgba(255,255,255,0.06); border-radius:16px; box-shadow: 10px 10px 22px rgba(0,0,0,.25), -10px -10px 22px rgba(255,255,255,.05);} 
+    .light .neu{ background:#f7f9fc; box-shadow: 10px 10px 22px #d5d9e0, -10px -10px 22px #ffffff;}
+    .neu-press{ box-shadow: inset 6px 6px 14px rgba(0,0,0,.28), inset -6px -6px 14px rgba(255,255,255,.06);} 
+    .parallax { background-image:url('jdss-hero.jpg'); background-size:cover;background-position:center;background-attachment:fixed; }
+    .emoji-divider{ text-align:center; font-size:1.9rem; margin:1.8rem 0; }
+
+    /* subtle float for logo */
+    @keyframes floaty{ 0%{transform:translateY(0)} 50%{transform:translateY(-3px)} 100%{transform:translateY(0)} }
+    .animate-floaty{ animation: floaty 2.4s ease-in-out infinite; }
+
+    /* =================== TEAM (two fixed columns, tiny names) =================== */
+    .team-grid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--team-gap); }
+    .team-card{
+      min-width:0;
+      min-height: var(--team-card-min-h);
+      padding: 6px 8px;
+      display:flex; align-items:center; gap:8px;
+      border-radius: 14px;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .team-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.18); }
+
+    .serial{ min-width: 22px; height: 22px; display:flex; align-items:center; justify-content:center; font-weight: 800; font-size: 9px; border-radius:999px; background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); }
+    .avatar{ width: 26px; height: 26px; display:flex; align-items:center; justify-content:center; font-weight: 900; font-size: 10px; color:#0b1220; border-radius:999px; background-image: linear-gradient(135deg,#ffdd6d,#ff9d2e); box-shadow: 0 6px 12px rgba(0,0,0,.2); }
+
+    .member-name{
+      flex:1; min-width:0;
+      font-weight: 800;               /* thick bubble look */
+      font-size: var(--team-name-size);
+      line-height: var(--team-line);
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      overflow: visible;
+      text-overflow: clip;
+    }
+
+    /* Phone tweaks: extra-tight on very narrow screens */
+    @media (max-width: 380px){
+      :root{ --team-name-size: 9.1px; --team-card-min-h: 44px; --team-gap: 5px; }
+      .serial{ min-width: 20px; height: 20px; font-size: 8px; }
+      .avatar{ width: 24px; height: 24px; font-size: 9px; }
+    }
+    /* Sm+ screens: allow slight breathing room */
+    @media (min-width: 640px){ :root{ --team-name-size: 11.5px; --team-card-min-h: 50px; } }
+
+    /* Accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce){ *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; } .parallax{ background-attachment: scroll;} }
+  </style>
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "JDSS Youth – Jai Durga Seva Samithi",
+    "url": "https://example.com/",
+    "sameAs": ["https://instagram.com/jdss_ka_murthi"],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kodimail",
+      "addressRegion": "Jagityal",
+      "postalCode": "505501",
+      "addressCountry": "IN"
+    },
+    "telephone": ["+91-7794044674", "+91-7207455422"]
+  }
+  </script>
+</head>
+
+<body>
+  <a href="#home" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] bg-black/70 text-white px-3 py-2 rounded-md">Skip to content</a>
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-[60] bg-black/30 dark:bg-black/40 backdrop-blur border-b border-white/10">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <a href="#home" class="flex items-center gap-3 group" aria-label="JDSS Youth home">
+          <span class="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-orange-500 text-black font-extrabold shadow-neu group-hover:animate-floaty" aria-hidden="true">ॐ</span>
+          <span class="font-display font-extrabold tracking-wide text-base sm:text-lg">JDSS Youth • JDSS KA MURTHI</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm" aria-label="Primary">
+          <a href="#about" class="hover:underline">About</a>
+          <a href="#organization" class="hover:underline">Organization</a>
+          <a href="#celebrations" class="hover:underline">Celebrations</a>
+          <a href="#mission" class="hover:underline">Mission</a>
+          <a href="#profiles" class="hover:underline">Profiles</a>
+          <a href="#ganesh" class="hover:underline">Ganesh Ji</a>
+          <a href="#contact" class="hover:underline">Contact</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <button @click="toggleTheme" class="neu p-2 rounded-2xl transition active:neu-press" :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+            <span x-show="isDark" class="text-xl" aria-hidden="true">🌞</span>
+            <span x-show="!isDark" class="text-xl" aria-hidden="true">🌙</span>
+          </button>
+          <button class="md:hidden neu p-2 rounded-2xl" @click="open = !open" aria-label="Menu" :aria-expanded="open">☰</button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div class="md:hidden" x-show="open" x-cloak x-transition.opacity @keydown.escape.window="open=false">
+      <div class="fixed inset-0 bg-black/40" @click="open=false" aria-hidden="true"></div>
+      <nav class="relative px-6 pb-4 pt-2 space-y-2 bg-black/60 backdrop-blur border-t border-white/10" aria-label="Mobile">
+        <a @click="open=false" class="block glass px-4 py-2" href="#about">About</a>
+        <a @click="open=false" class="block glass px-4 py-2" href="#organization">Organization</a>
+        <a @click="open=false" class="block glass px-4 py-2" href="#celebrations">Celebrations</a>
+        <a @click="open=false" class="block glass px-4 py-2" href="#mission">Mission</a>
+        <a @click="open=false" class="block glass px-4 py-2" href="#profiles">Profiles</a>
+        <a @click="open=false" class="block glass px-4 py-2" href="#ganesh">Ganesh Ji</a>
+        <a @click="open=false" class="block glass px-4 py-2" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="parallax pt-32">
+    <div class="mx-auto max-w-6xl px-6 py-24 md:py-32 text-center">
+      <div class="glass p-8 md:p-12 rounded-2xl" data-aos="fade-up">
+        <h1 class="bubble text-5xl md:text-7xl font-extrabold mb-2">ᴊᴅꜱꜱ ʏᴏᴜᴛʜ🦅 </h1>
+        <p class="mt-2 text-lg md:text-xl">🙏 <span class="font-semibold">Jai Durga Seva Samithi</span> 🙏 <br> Main Group | Kodimail, Jagityal District</p>
+        <p class="mt-2">📍 Kodimail, Jagityal District – 505501</p>
+        <div class="mt-7 flex items-center justify-center gap-3">
+          <a href="#organization" class="neu px-5 py-3 rounded-2xl font-semibold transition active:neu-press">📋 View Team</a>
+          <a href="#profiles" class="glass px-5 py-3 rounded-2xl font-semibold transition hover:-translate-y-0.5">👥 Add Members</a>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 text-center">
+        <div class="glass p-4 rounded-2xl"><div class="text-2xl font-bold">28+ 🗓</div><div class="text-xs opacity-80">Years of Tradition</div></div>
+        <div class="glass p-4 rounded-2xl"><div class="text-2xl font-bold">1000+ 🙌</div><div class="text-xs opacity-80">Devotees Joined</div></div>
+        <div class="glass p-4 rounded-2xl"><div class="text-2xl font-bold">2 🎆</div><div class="text-xs opacity-80">Major Festivals</div></div>
+        <div class="glass p-4 rounded-2xl"><div class="text-2xl font-bold">∞ ✨</div><div class="text-xs opacity-80">Blessings</div></div>
+      </div>
+      <div class="emoji-divider">🌟🌟🌟</div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-16 md:py-20">
+    <div class="mx-auto max-w-5xl px-6" data-aos="fade-right">
+      <h2 class="text-4xl font-extrabold text-center font-display mb-2">👋 Welcome to JDSS Youth</h2>
+      <p class="text-center italic">Since 1997 | Tradition Continues till 2025 &amp; Beyond</p>
+      <p class="text-center mb-10">📍 Kodimail, Jagityal District – 505501</p>
+      <div class="prose prose-invert max-w-none glass p-6 md:p-8 rounded-2xl">
+        <p><strong>JDSS Youth (Jai Durga Seva Samithi)</strong> is a symbol of devotion, culture, and youth power. With the blessings of Maa Durga and Lord Ganesh, we bring people together in joy, devotion, and brotherhood.</p>
+        <h3>🙏 Our Celebrations</h3>
+        <ul>
+          <li>🕉 <strong>Durga Mata</strong> – Devotional puja, cultural programs, rituals, music, and traditional activities.</li>
+          <li>🐘 <strong>Ganesh Chaturthi</strong> – From installation to Visarjan with unmatched energy and joy.</li>
+          <li>🎶 <strong>Grand Finale</strong> – DJ, Band, Bharath bringing the community together.</li>
+        </ul>
+        <h3>🌸 Our Mission</h3>
+        <ul>
+          <li>Preserve traditions for the next generation.</li>
+          <li>Unite youth in culture and devotion.</li>
+          <li>Spread happiness, positivity, and service.</li>
+        </ul>
+      </div>
+      <div class="emoji-divider">💐💐💐</div>
+    </div>
+  </section>
+
+  <!-- ORGANIZATION: TWO-COLUMN TEAM -->
+  <section id="organization" class="py-12 md:py-16 bg-white/5 dark:bg-white/5">
+    <div class="mx-auto max-w-6xl px-6" data-aos="zoom-in">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-4 font-display">🏛 JDSS Organization</h2>
+      <p class="text-center opacity-90 mb-6">Unified team list — <strong>exactly two columns</strong> with compact glass cards. Names are tiny bubble caps and fully visible on phones.</p>
+
+      <div class="neu p-4 md:p-6 rounded-2xl mb-6" data-aos="fade-up">
+        <h3 class="text-xl md:text-2xl font-extrabold mb-4 text-center">📋 Team</h3>
+
+        <ul class="team-grid" role="list">
+          <!-- 1..31 (order exactly as provided) -->
+          <li class="glass team-card" aria-label="1 MANIKYAM SRINIVAS"><span class="serial">1</span><span class="avatar">MS</span><span class="member-name bubble-caps">MANIKYAM SRINIVAS</span></li>
+          <li class="glass team-card" aria-label="2 VOOTKURI MAHESH"><span class="serial">2</span><span class="avatar">VM</span><span class="member-name bubble-caps">VOOTKURI MAHESH</span></li>
+
+          <li class="glass team-card" aria-label="3 ATLA RAMAESH"><span class="serial">3</span><span class="avatar">AR</span><span class="member-name bubble-caps">ATLA RAMAESH</span></li>
+          <li class="glass team-card" aria-label="4 ATLA MAHESH"><span class="serial">4</span><span class="avatar">AM</span><span class="member-name bubble-caps">ATLA MAHESH</span></li>
+
+          <li class="glass team-card" aria-label="5 ATLA GANESH"><span class="serial">5</span><span class="avatar">AG</span><span class="member-name bubble-caps">ATLA GANESH</span></li>
+          <li class="glass team-card" aria-label="6 ALDI GANESH"><span class="serial">6</span><span class="avatar">AG</span><span class="member-name bubble-caps">ALDI GANESH</span></li>
+
+          <li class="glass team-card" aria-label="7 BINGI GANESH"><span class="serial">7</span><span class="avatar">BG</span><span class="member-name bubble-caps">BINGI GANESH</span></li>
+          <li class="glass team-card" aria-label="8 KAITHA MADHU"><span class="serial">8</span><span class="avatar">KM</span><span class="member-name bubble-caps">KAITHA MADHU</span></li>
+
+          <li class="glass team-card" aria-label="9 KAITHA MAHII"><span class="serial">9</span><span class="avatar">KM</span><span class="member-name bubble-caps">KAITHA MAHII</span></li>
+          <li class="glass team-card" aria-label="10 ALDI PRASHANTH"><span class="serial">10</span><span class="avatar">AP</span><span class="member-name bubble-caps">ALDI PRASHANTH</span></li>
+
+          <li class="glass team-card" aria-label="11 KAITHA RAMESH"><span class="serial">11</span><span class="avatar">KR</span><span class="member-name bubble-caps">KAITHA RAMESH</span></li>
+          <li class="glass team-card" aria-label="12 BATTINI MALLESH"><span class="serial">12</span><span class="avatar">BM</span><span class="member-name bubble-caps">BATTINI MALLESH</span></li>
+
+          <li class="glass team-card" aria-label="13 DHOPATHI MUNI"><span class="serial">13</span><span class="avatar">DM</span><span class="member-name bubble-caps">DHOPATHI MUNI</span></li>
+          <li class="glass team-card" aria-label="14 RACHAKONDA.VENKI"><span class="serial">14</span><span class="avatar">RV</span><span class="member-name bubble-caps">RACHAKONDA.VENKI</span></li>
+
+          <li class="glass team-card" aria-label="15 NAPARI RAJU"><span class="serial">15</span><span class="avatar">NR</span><span class="member-name bubble-caps">NAPARI RAJU</span></li>
+          <li class="glass team-card" aria-label="16 YELDHI RAKESH"><span class="serial">16</span><span class="avatar">YR</span><span class="member-name bubble-caps">YELDHI RAKESH</span></li>
+
+          <li class="glass team-card" aria-label="17 KASARAPU PRANAY"><span class="serial">17</span><span class="avatar">KP</span><span class="member-name bubble-caps">KASARAPU PRANAY</span></li>
+          <li class="glass team-card" aria-label="18 PANNATI MOURYA"><span class="serial">18</span><span class="avatar">PM</span><span class="member-name bubble-caps">PANNATI MOURYA</span></li>
+
+          <li class="glass team-card" aria-label="19 KASARAPU VINAY"><span class="serial">19</span><span class="avatar">KV</span><span class="member-name bubble-caps">KASARAPU VINAY</span></li>
+          <li class="glass team-card" aria-label="20 GAJULA SHIVA"><span class="serial">20</span><span class="avatar">GS</span><span class="member-name bubble-caps">GAJULA SHIVA</span></li>
+
+          <li class="glass team-card" aria-label="21 GAJULA AMAR"><span class="serial">21</span><span class="avatar">GA</span><span class="member-name bubble-caps">GAJULA AMAR</span></li>
+          <li class="glass team-card" aria-label="22 GAJULA CHARAN"><span class="serial">22</span><span class="avatar">GC</span><span class="member-name bubble-caps">GAJULA CHARAN</span></li>
+
+          <li class="glass team-card" aria-label="23 NATHE GRISHU"><span class="serial">23</span><span class="avatar">NG</span><span class="member-name bubble-caps">NATHE GRISHU</span></li>
+          <li class="glass team-card" aria-label="24 VAD..JASWANTH"><span class="serial">24</span><span class="avatar">VJ</span><span class="member-name bubble-caps">VAD..JASWANTH</span></li>
+
+          <li class="glass team-card" aria-label="25 RACHAK.MALVIK"><span class="serial">25</span><span class="avatar">RM</span><span class="member-name bubble-caps">RACHAK.MALVIK</span></li>
+          <li class="glass team-card" aria-label="26 GANGIS.GANESH"><span class="serial">26</span><span class="avatar">GG</span><span class="member-name bubble-caps">GANGIS.GANESH</span></li>
+
+          <li class="glass team-card" aria-label="27 NALLALAA ANIRUTH"><span class="serial">27</span><span class="avatar">NA</span><span class="member-name bubble-caps">NALLALAA ANIRUTH</span></li>
+          <li class="glass team-card" aria-label="28 NALLALA ABHI"><span class="serial">28</span><span class="avatar">NA</span><span class="member-name bubble-caps">NALLALA ABHI</span></li>
+
+          <li class="glass team-card" aria-label="29 KASARAPU SANVITH"><span class="serial">29</span><span class="avatar">KS</span><span class="member-name bubble-caps">KASARAPU SANVITH</span></li>
+          <li class="glass team-card" aria-label="30 PANNATI GANESH"><span class="serial">30</span><span class="avatar">PG</span><span class="member-name bubble-caps">PANNATI GANESH</span></li>
+
+          <li class="glass team-card" aria-label="31 KASARAPU SAITH"><span class="serial">31</span><span class="avatar">KS</span><span class="member-name bubble-caps">KASARAPU SAITH</span></li>
+        </ul>
+      </div>
+
+      <p class="text-center mt-3 opacity-90">IT IS SINCE 1997 TO 2025 TO BE CONTINUED</p>
+      <div class="emoji-divider">🎗🎗🎗</div>
+    </div>
+  </section>
+
+  <!-- CELEBRATIONS -->
+  <section id="celebrations" class="py-16 md:py-20">
+    <div class="mx-auto max-w-6xl px-6" data-aos="fade-left">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-10 font-display">🥳 Our Celebrations</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="group glass rounded-3xl p-6 transition hover:-translate-y-1">
+          <h3 class="text-2xl font-bold mb-2">🕉 Durga Mata</h3>
+          <p>Grand Puja with devotion, cultural programs, rituals, and music.</p>
+        </div>
+        <div class="group glass rounded-3xl p-6 transition hover:-translate-y-1">
+          <h3 class="text-2xl font-bold mb-2">🐘 Ganesh Chaturthi</h3>
+          <p>Vibrant celebrations from installation to Visarjan.</p>
+        </div>
+        <div class="group glass rounded-3xl p-6 md:col-span-1 transition hover:-translate-y-1">
+          <h3 class="text-2xl font-bold mb-2">🎶 Grand Finale Day</h3>
+          <p>DJ, Band, Bharath procession bringing the entire community together.</p>
+        </div>
+      </div>
+      <div class="emoji-divider">🎈🎈🎈</div>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section id="mission" class="py-16 md:py-20 bg-white/5">
+    <div class="mx-auto max-w-4xl px-6" data-aos="fade-up">
+      <div class="neu p-8 md:p-10 rounded-3xl">
+        <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-6 font-display">🌸 Our Mission</h2>
+        <ul class="space-y-3 text-lg">
+          <li>🌸 Preserve traditions and pass them to the next generation.</li>
+          <li>🌸 Unite youth in the spirit of culture and devotion.</li>
+          <li>🌸 Organize events that spread happiness, positivity, and service.</li>
+        </ul>
+      </div>
+      <div class="emoji-divider">🌺🌺🌺</div>
+    </div>
+  </section>
+
+  <!-- PROFILES -->
+  <section id="profiles" class="py-16 md:py-20">
+    <div class="mx-auto max-w-6xl px-6" data-aos="zoom-in-up">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-6 font-display">👥 Upload Two Profiles – JDSS Youth Kodimail</h2>
+      <p class="text-center text-sm opacity-80 mb-8">Add <strong>two member profiles</strong> (photo + details). Saved to your browser. Export/Import JSON to move.</p>
+      <form id="profileForm" class="grid lg:grid-cols-2 gap-6" aria-label="Member profile form">
+        <!-- Profile 1 -->
+        <div class="neu p-6 rounded-3xl">
+          <h3 class="text-xl font-bold mb-4">Profile 1</h3>
+          <label class="block text-sm mb-1" for="name1">Full Name</label>
+          <input id="name1" name="name1" class="w-full mb-3 rounded-2xl px-4 py-2 text-black" placeholder="Enter name" required>
+          <label class="block text-sm mb-1" for="role1">Role / Title</label>
+          <input id="role1" name="role1" class="w-full mb-3 rounded-2xl px-4 py-2 text-black" placeholder="Leader / Volunteer">
+          <label class="block text-sm mb-1" for="bio1">Short Bio</label>
+          <textarea id="bio1" name="bio1" class="w-full mb-3 rounded-2xl px-4 py-2 text-black" rows="3" placeholder="About this member"></textarea>
+          <label class="block text-sm mb-1" for="photo1">Photo</label>
+          <input id="photo1" name="photo1" type="file" accept="image/*" class="w-full mb-4" />
+          <button type="button" class="save1 w-full rounded-2xl px-4 py-2 glass font-semibold transition hover:-translate-y-0.5 active:scale-[.99]">💾 Save Profile 1</button>
+        </div>
+        <!-- Profile 2 -->
+        <div class="neu p-6 rounded-3xl">
+          <h3 class="text-xl font-bold mb-4">Profile 2</h3>
+          <label class="block text-sm mb-1" for="name2">Full Name</label>
+          <input id="name2" name="name2" class="w-full mb-3 rounded-2xl px-4 py-2 text-black" placeholder="Enter name" required>
+          <label class="block text-sm mb-1" for="role2">Role / Title</label>
+          <input id="role2" name="role2" class="w-full mb-3 rounded-2xl px-4 py-2 text-black" placeholder="Leader / Volunteer">
+          <label class="block text-sm mb-1" for="bio2">Short Bio</label>
+          <textarea id="bio2" name="bio2" class="w-full mb-3 rounded-2xl px-4 py-2 text-black" rows="3" placeholder="About this member"></textarea>
+          <label class="block text-sm mb-1" for="photo2">Photo</label>
+          <input id="photo2" name="photo2" type="file" accept="image/*" class="w-full mb-4" />
+          <button type="button" class="save2 w-full rounded-2xl px-4 py-2 glass font-semibold transition hover:-translate-y-0.5 active:scale-[.99]">💾 Save Profile 2</button>
+        </div>
+      </form>
+      <!-- Actions -->
+      <div class="mt-6 flex flex-wrap items-center gap-3 justify-center">
+        <button id="exportProfiles" class="rounded-2xl px-4 py-2 neu transition active:neu-press">📤 Export Profiles (JSON)</button>
+        <label for="importProfiles" class="neu rounded-2xl px-4 py-2 cursor-pointer transition active:neu-press">📥 Import Profiles (JSON)
+          <input id="importProfiles" type="file" accept="application/json" class="hidden" />
+        </label>
+        <button id="resetProfiles" class="rounded-2xl px-4 py-2 neu transition active:neu-press">🗑 Clear Saved Profiles</button>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6 mt-8" id="profileCards" aria-live="polite"></div>
+      <div class="emoji-divider">👤👤👤</div>
+    </div>
+  </section>
+
+  <!-- GANESH PHOTO -->
+  <section id="ganesh" class="py-16 md:py-20 bg-gradient-to-b from-amber-900/30 to-amber-900/10">
+    <div class="mx-auto max-w-6xl px-6" data-aos="fade-up">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-10 font-display">🙏 Lord Ganesh Blessings 🙏</h2>
+      <p class="text-center max-w-3xl mx-auto mb-8">Om Gam Ganapataye Namah – The remover of obstacles and bestower of wisdom.</p>
+      <figure class="max-w-3xl mx-auto rounded-3xl overflow-hidden glass" data-aos="zoom-in">
+        <img src="ganesh.jpg" alt="Idol of Lord Ganesh" loading="lazy" class="w-full" width="1200" height="800">
+        <figcaption class="sr-only">Sacred image of Lord Ganesh</figcaption>
+      </figure>
+      <div class="glass p-6 md:p-8 rounded-3xl mt-8 max-w-3xl mx-auto text-center">
+        <h3 class="text-xl font-bold mb-2">Sacred Ganesh Mantra</h3>
+        <div class="text-2xl md:text-3xl font-display leading-relaxed">
+          ॐ गं गणपतये नमः<br>
+          Om Gam Ganapataye Namah
+        </div>
+        <p class="mt-3 italic">"Salutations to Lord Ganesha, the remover of obstacles"</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6 mt-8">
+        <div class="glass p-6 rounded-3xl">
+          <h4 class="font-bold mb-2">🔎 Symbolism</h4>
+          <p>Elephant head represents wisdom, large ears to listen to prayers, small mouth to speak less.</p>
+        </div>
+        <div class="glass p-6 rounded-3xl">
+          <h4 class="font-bold mb-2">🎉 Celebration</h4>
+          <p>10-day festival marking Ganesh's birth, ending with immersion (Visarjan) in water.</p>
+        </div>
+        <div class="glass p-6 rounded-3xl">
+          <h4 class="font-bold mb-2">💝 JDSS Tradition</h4>
+          <p>Celebrated with devotion since 1997, bringing community together in joy.</p>
+        </div>
+      </div>
+      <div class="emoji-divider">🐘🐘🐘</div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-16 md:py-20">
+    <div class="mx-auto max-w-4xl px-6" data-aos="fade-up">
+      <div class="glass p-8 rounded-3xl text-center">
+        <h2 class="text-3xl md:text-4xl font-extrabold mb-6 font-display">📞 Contact Us</h2>
+        <p class="text-lg mb-2">📱 Phone Numbers: 
+          <a class="underline hover:no-underline" href="tel:+917794044674"><strong>77940 44674</strong></a> / 
+          <a class="underline hover:no-underline" href="tel:+917207455422"><strong>72074 55422</strong></a>
+        </p>
+        <p class="text-lg mb-2">📸 Instagram: <a class="underline hover:no-underline" href="https://instagram.com/jdss_ka_murthi" target="_blank" rel="noopener"><strong>@jdss_ka_murthi</strong></a></p>
+        <p class="text-lg mb-2">📧 Email: <a class="underline hover:no-underline" href="mailto:pranaykasarapu@gmail.com"><strong>pranaykasarapu@gmail.com</strong></a></p>
+        <p class="mt-4">💖 JDSS Youth – Jai Durga Seva Samithi</p>
+        <p>✨ Celebrating Faith. Inspiring Youth. Uniting People.</p>
+        <p class="mt-2">🔥 From 1997 to 2025 and beyond – our devotion and celebrations never stop!</p>
+      </div>
+      <div class="emoji-divider">☎☎☎</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-6 text-center text-sm border-t border-white/10">
+    <p>© JDSS Youth – Jai Durga Seva Samithi • Kodimail, Jagityal District – 505501 🎊</p>
+  </footer>
+
+  <!-- Floating WhatsApp button -->
+  <a href="https://wa.me/917794044674" class="fixed bottom-5 right-5 rounded-full neu p-3 animate-pulse" aria-label="WhatsApp">
+    <span class="text-2xl" aria-hidden="true">💬</span>
+  </a>
+
+  <!-- SCRIPTS: Theme + AOS + Profiles -->
+  <script>
+    // Alpine theme app
+    function themeApp(){
+      return {
+        isDark: JSON.parse(localStorage.getItem('jdss_theme_dark') ?? 'true'),
+        open: false,
+        toggleTheme(){ this.isDark = !this.isDark; localStorage.setItem('jdss_theme_dark', JSON.stringify(this.isDark)); }
+      }
+    }
+
+    // Init AOS when ready
+    window.addEventListener('DOMContentLoaded', function(){
+      if (window.AOS) AOS.init({ duration: 700, once: true });
+    });
+
+    // -------- Profiles (LocalStorage + Import/Export) --------
+    const cards = document.getElementById('profileCards');
+
+    function loadProfiles(){
+      try { return JSON.parse(localStorage.getItem('jdss_profiles')||'[]') || []; }
+      catch { return []; }
+    }
+    function saveProfiles(list){ localStorage.setItem('jdss_profiles', JSON.stringify(list)); }
+
+    function fileToDataURL(file){
+      return new Promise((res,rej)=>{
+        if(!file) return res(null);
+        const r=new FileReader();
+        r.onload=()=>res(r.result);
+        r.onerror=rej;
+        r.readAsDataURL(file);
+      });
+    }
+
+    function roleBadge(role){
+      if(!role) return '👤';
+      const r = String(role).toLowerCase();
+      if(r.includes('leader')) return '🎤';
+      if(r.includes('volunteer')) return '🙋';
+      return '👤';
+    }
+
+    function escapeHTML(str){
+      return String(str||'')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#39;');
+    }
+
+    function renderCards(list){
+      cards.innerHTML='';
+      list.forEach((p,i)=>{
+        const safeName = escapeHTML(p.name||'Member');
+        const safeRole = escapeHTML(p.role||'');
+        const safeBio  = escapeHTML(p.bio||'');
+        const imgHtml = p.photo
+          ? <img src="${p.photo}" alt="${safeName}" class="w-full h-56 object-cover rounded-2xl" loading="lazy"/>
+          : <div class="w-full h-56 rounded-2xl glass flex items-center justify-center text-5xl" aria-hidden="true">${roleBadge(p.role)}</div>;
+        const el = document.createElement('article');
+        el.className='neu p-5 rounded-3xl';
+        el.innerHTML = `
+          ${imgHtml}
+          <h4 class='mt-4 text-xl font-bold'>${roleBadge(p.role)} ${safeName}</h4>
+          <p class='opacity-90'>${safeRole}</p>
+          <p class='mt-2 text-sm leading-relaxed'>${safeBio}</p>
+          <div class='mt-4 flex gap-2'>
+            <button data-i='${i}' class='edit rounded-xl px-3 py-2 glass'>✏ Edit</button>
+            <button data-i='${i}' class='remove rounded-xl px-3 py-2 glass'>🗑 Remove</button>
+          </div>`;
+        cards.appendChild(el);
+      });
+    }
+
+    function addProfile(obj, index=null){
+      const list = loadProfiles();
+      if(index===null){ list.unshift(obj); } else {
+        if(!list[index]) list[index] = {};
+        list[index] = { ...list[index], ...obj };
+      }
+      saveProfiles(list); renderCards(list);
+    }
+
+    renderCards(loadProfiles());
+
+    document.querySelector('.save1').addEventListener('click', async ()=>{
+      const f = document.getElementById('profileForm');
+      const name=f.name1.value.trim(); if(!name) return alert('Please enter name for Profile 1');
+      const role=f.role1.value.trim(); const bio=f.bio1.value.trim();
+      const photo=await fileToDataURL(f.photo1.files[0]);
+      addProfile({name,role,bio,photo}, 0); // keep slot 0 for profile 1
+      alert('Profile 1 saved');
+    });
+
+    document.querySelector('.save2').addEventListener('click', async ()=>{
+      const f = document.getElementById('profileForm');
+      const name=f.name2.value.trim(); if(!name) return alert('Please enter name for Profile 2');
+      const role=f.role2.value.trim(); const bio=f.bio2.value.trim();
+      const photo=await fileToDataURL(f.photo2.files[0]);
+      const list = loadProfiles();
+      if(list.length < 1) list.push({}); // ensure index 0 exists for profile1 slot
+      if(list.length < 2) list.push({}); // ensure index 1 exists for profile2 slot
+      list[1] = {name,role,bio,photo};
+      saveProfiles(list); renderCards(list);
+      alert('Profile 2 saved');
+    });
+
+    cards.addEventListener('click', (e)=>{
+      const btn=e.target.closest('button'); if(!btn) return; const idx=+btn.dataset.i; const list=loadProfiles();
+      if(btn.classList.contains('remove')){
+        if(!Number.isInteger(idx)) return;
+        list.splice(idx,1); saveProfiles(list); renderCards(list); return;
+      }
+      if(btn.classList.contains('edit')){
+        const p=list[idx]||{}; const f=document.getElementById('profileForm');
+        if(idx===0){ f.name1.value=p.name||''; f.role1.value=p.role||''; f.bio1.value=p.bio||''; }
+        if(idx===1){ f.name2.value=p.name||''; f.role2.value=p.role||''; f.bio2.value=p.bio||''; }
+        window.scrollTo({ top: document.getElementById('profiles').offsetTop-80, behavior:'smooth' });
+      }
+    });
+
+    document.getElementById('exportProfiles').addEventListener('click', ()=>{
+      const data = new Blob([JSON.stringify(loadProfiles(), null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(data); const a=document.createElement('a'); a.href=url; a.download='jdss-profiles.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importProfiles').addEventListener('change', async (e)=>{
+      const file=e.target.files[0]; if(!file) return; const txt=await file.text();
+      try{ const arr=JSON.parse(txt); if(!Array.isArray(arr)) throw new Error('Invalid'); saveProfiles(arr); renderCards(arr); alert('Profiles imported'); }catch{ alert('Invalid JSON'); }
+      e.target.value='';
+    });
+
+    document.getElementById('resetProfiles').addEventListener('click', ()=>{
+      if(confirm('Clear saved profiles from this browser?')){ localStorage.removeItem('jdss_profiles'); renderCards([]); }
+    });
+  </script>
+</body>
+</html>
